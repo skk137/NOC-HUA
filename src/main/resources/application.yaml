@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: HUA NOC Services
+  cache:
+    type: caffeine
+    caffeine:
+      spec: expireAfterWrite=10m
+
+server:
+  port: 8081
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ρυθμίσεις Routee – άφησε κενά αν δεν έχεις κλειδιά
+routee:
+  app-id:
+  app-secret:
+  sender: HUANOC
