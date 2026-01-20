@@ -9,30 +9,63 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+// Υλοποίηση του LookupService που χρησιμοποιεί in-memory αποθήκευση
+// Κατάλληλη για απλές περιπτώσεις χωρίς εξωτερική βάση
 @Service
 public class InMemoryLookupServiceImpl implements LookupService {
-    private final Map<String, PersonType> inMemoryDatabase = new ConcurrentHashMap<>();
 
+    // In-memory "βάση δεδομένων" που χαρτογραφεί huaId σε PersonType
+    // Χρησιμοποιείται ConcurrentHashMap για thread-safety
+    private final Map<String, PersonType> inMemoryDatabase =
+            new ConcurrentHashMap<>();
+
+    // Αρχικοποίηση  δεδομένων μετά τη δημιουργία του bean
     @PostConstruct
     public void populateInitialData() {
+
+        // Φοιτητές
         inMemoryDatabase.put("it2023001", PersonType.STUDENT);
         inMemoryDatabase.put("it2023002", PersonType.STUDENT);
+
+        // Ανώνυμοι χρήστες
         inMemoryDatabase.put("t0001", PersonType.ANONYMOUS);
         inMemoryDatabase.put("t0002", PersonType.ANONYMOUS);
+
+        // Χρήστες βιβλιοθήκης
         inMemoryDatabase.put("s0001", PersonType.LIBRARY);
         inMemoryDatabase.put("s0002", PersonType.LIBRARY);
     }
 
+    // Αναζήτηση χρήστη με βάση το huaId
     @Override
     public LookupResult lookupByHuaId(final String huaId) {
-        if (huaId == null) throw new NullPointerException("huaId cannot be null");
-        if (huaId.isBlank()) throw new IllegalArgumentException("huaId cannot be blank");
-        final String normalizedHuaId = huaId.strip().toLowerCase();
-        final PersonType type = this.inMemoryDatabase.get(normalizedHuaId);
+
+        // Έλεγχος εγκυρότητας παραμέτρου
+        if (huaId == null)
+            throw new NullPointerException("huaId cannot be null");
+
+        if (huaId.isBlank())
+            throw new IllegalArgumentException("huaId cannot be blank");
+
+        // Κανονικοποίηση του huaId (trim + lowercase)
+        final String normalizedHuaId =
+                huaId.strip().toLowerCase();
+
+        // Αναζήτηση του τύπου χρήστη
+        final PersonType type =
+                this.inMemoryDatabase.get(normalizedHuaId);
+
+        // Αν δεν βρεθεί, επιστρέφεται κενό αποτέλεσμα
         if (type == null) {
             return LookupResult.empty(huaId);
-        } else {
-            return new LookupResult(huaId, true, normalizedHuaId, type);
         }
+
+        // Αν βρεθεί, επιστρέφεται πλήρες αποτέλεσμα αναζήτησης
+        return new LookupResult(
+                huaId,
+                true,
+                normalizedHuaId,
+                type
+        );
     }
 }

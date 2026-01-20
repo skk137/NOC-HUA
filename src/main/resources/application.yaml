@@ -1,22 +1,27 @@
 spring:
   application:
     name: HUA NOC Services
+
+  # Ρυθμίσεις caching για το NOC service
+  # Ενεργοποιείται caffeine cache
   cache:
-    type: caffeine
+    type: caffeine             # Επιλογή cache provider: Caffeine
     caffeine:
-      spec: expireAfterWrite=10m
+      spec: expireAfterWrite=10m  # Κανόνας: κάθε entry λήγει 10 λεπτά μετά τη δημιουργία/ενημέρωση
 
 server:
-  port: 8081
+  port: 8081                   # Port στο οποίο τρέχει το NOC service
 
+# Ρυθμίσεις OpenAPI / Swagger UI
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    path: /v3/api-docs         # Endpoint που επιστρέφει το OpenAPI JSON
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger-ui.html     # Swagger UI σελίδα για δοκιμή των endpoints
 
-# ρυθμίσεις Routee – άφησε κενά αν δεν έχεις κλειδιά
+# Ρυθμίσεις Routee (SMS provider)
+# Αν δεν υπάρχουν κλειδιά, μπορεί να ενεργοποιηθεί mock υλοποίηση SMS
 routee:
-  app-id:
-  app-secret:
-  sender: HUANOC
+  app-id:                      # Routee App ID
+  app-secret:                  # Routee App Secret
+  sender: HUANOC               # Aποστολέας που θα εμφανίζεται στα SMS
